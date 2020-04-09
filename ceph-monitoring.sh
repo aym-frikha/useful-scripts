@@ -1,0 +1,85 @@
+#!/bin/bash
+
+# exit if not leader
+
+HOSTGROUP=${1:-unknown hostgroup}
+HOSTNAME=`hostname -s`
+
+# check ceph health
+HEALTH=$(ceph health)
+ACTIONABLE_WARNINGS=$(ceph health detail | egrep 'backfill_toofull|incomplete')
+HEALTH_FILTERED=$(ceph health detail | egrep -v 'HEALTH_WARN|OBJECT_MISPLACED|PG_DEGRADED|backfilling|wait_backfill|backfill_wait|recover|noscrub|nodeep-scrub|failing to respond to cache pressure|noout|currently failed to')
+if [ "$HEALTH" != 'HEALTH_OK' ] && [ "$ACTIONABLE_WARNINGS" ]
+then
+    echo Ceph is not healthy:
+    ceph status
+    echo
+    echo Note these PGs:
+    ceph health detail | egrep 'backfill_toofull|incomplete'
+    echo
+elif [ "$HEALTH" != 'HEALTH_OK' ] && [ "$HEALTH_FILTERED" ]
+then
+    echo Ceph is not healthy:
+    ceph status
+    echo
+fi
+
+# get logs for last interval
+rm -f /tmp/ceph.log.lastinterval
+for (( i = 15; i >= 0; i-- )) ; do
+    DATE=`date +'%Y-%m-%d %H:%M' -d "$i minutes ago"`
+    sed -n -e "/${DATE}/p" /var/log/ceph/ceph.log >> /tmp/ceph.log.lastinterval
+done
+
+# check for ERR log messages in the past interval
+ERRORS=$(grep ERR /tmp/ceph.log.lastinterval)
+if [ "$ERRORS" ]
+then
+    echo Errors in ceph.log: $(grep ERR /tmp/ceph.log.lastinterval | wc -l)
+    echo
+    grep ERR /tmp/ceph.log.lastinterval
+    echo
+fi
+
+# check for WRN or DBG log messages in the past interval
+FILTER='osdmap|fsmap|scrub ok|scrub starts|pgmap|failing to respond to cache pressure|striper.layout|rdlock|xlock|wrlock|setfilelockrule|noout|nodown|greedyspill.lua|Health check|overall HEALTH_WARN|slow request|evicting unresponsive client  '
+WARNINGS=$(grep -v INF /tmp/ceph.log.lastinterval | egrep -v "${FILTER}")
+if [ "$WARNINGS" ]
+then
+    echo Warnings in ceph.log: $(grep -v INF /tmp/ceph.log.lastinterval | egrep -v "${FILTER}" | wc -l)
+    echo
+    grep -v INF /tmp/ceph.log.lastinterval | egrep -v "${FILTER}" | tail
+    echo
+fi
+
+# check for down osd's
+DOWNOSD=$(egrep 'out|down|fail|boot' /tmp/ceph.log.lastinterval | egrep -v "${FILTER}" | grep osd)
+if [ "$DOWNOSD" ]
+then
+    echo Out/Down/Failed OSDs:
+    egrep 'out|down|fail|boot' /tmp/ceph.log.lastinterval | egrep -v "${FILTER}" | grep osd | tail
+    echo
+fi
+
+# check for slow requests, filter out based on the
+# number of requests (10) or blocked time (60sec)
+SLOW=$(grep slow /tmp/ceph.log.lastinterval | grep -v mds. | grep oldest)
+if [ "$SLOW" ]
+then
+    if (( `cut -d ' ' -f 10 <<< "$SLOW" | jq -s 'add/length|floor'` > ${2:-10} )) ||
+       (( `cut -d ' ' -f 20 <<< "$SLOW" | sort -n | tail -1 | jq floor` > ${3:-60} ))
+    then
+        echo Slow Requests:
+        echo "$SLOW" | sort -n -k 10 | tail
+        echo
+    fi
+fi
+
+# check for monitor elections
+ELEC=$(grep election /tmp/ceph.log.lastinterval)
+if [ "$ELEC" ]
+then
+    echo Monitor Elections:
+    grep election /tmp/ceph.log.lastinterval | tail
+    echo
+fi

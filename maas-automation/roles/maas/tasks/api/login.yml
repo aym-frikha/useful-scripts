@@ -1,0 +1,4 @@
+---
+- name: Login to MAAS
+  command: "maas login {{maas_user}} {{maas_url}}   {{maas_api_key}}"
+  changed_when: false

@@ -1,0 +1,14 @@
+- name: create pods
+  command: 'maas {{maas_user}} pod compose {{item.kvm}} hostname={{item.hostname}} cores={{item.cores}} 
+            memory={{item.memory}} storage="{{item.disk}}" interfaces="{{item.interfaces}}" zone=1'
+  ignore_errors: yes
+  loop:
+     - "{{ VM1 }}"
+     - "{{ VM2 }}"
+     - "{{ VM3 }}"
+     - "{{ VM4 }}"
+     - "{{ VM5 }}"
+     - "{{ VM6 }}"
+     - "{{ VM7 }}"
+     - "{{ VM8 }}"
+     - "{{ VM9 }}"

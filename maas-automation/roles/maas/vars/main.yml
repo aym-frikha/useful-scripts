@@ -1,0 +1,30 @@
+# maas user
+maas_user: afrikha
+# maas api url
+maas_url:  http://172.16.7.10:5240/MAAS
+# maas Password
+maas_api_key: atVgTtekcsLZH6EhVy:Hqn8u9rT6Y9aQqSbTJ:xfd9hbBVWF9B6CLzY2ZwaU5Xe3Q5Dzed
+
+VM1: { kvm: '92', hostname: 'controller-1', cores: '8', memory: '30000', disk: 'root:50,root:100,root:25', 
+       tag: 'controller', interfaces: 'eth0:space=oam;eth1:space=access;eth2:space=vxlan;eth3:space=testvlan' }
+VM2: { kvm: '92', hostname: 'controller-2', cores: '8', memory: '30000', disk: 'root:50,root:100,root:25',
+       tag: 'controller', interfaces: 'eth0:space=oam;eth1:space=access;eth2:space=vxlan;eth3:space=testvlan' }
+VM3: { kvm: '95', hostname: 'controller-3', cores: '8', memory: '30000', disk: 'root:50,root:100,root:25', 
+       tag: 'controller', interfaces: 'eth0:space=oam;eth1:space=access;eth2:space=vxlan;eth3:space=testvlan'}
+VM4: { kvm: '95', hostname: 'controller-4', cores: '8', memory: '30000', disk: 'root:50,root:100,root:25', 
+       tag: 'controller', interfaces: 'eth0:space=oam;eth1:space=access;eth2:space=vxlan;eth3:space=testvlan'}
+VM5: { kvm: '96', hostname: 'gateway-1', cores: '4', memory: '15000', disk: 'root:50,root:100,root:25',
+       tag: 'gateway', interfaces: 'eth0:space=oam;eth1:space=access;eth2:space=vxlan;eth3:space=testvlan'}
+VM6: { kvm: '96', hostname: 'gateway-2', cores: '4', memory: '15000', disk: 'root:50,root:100,root:25', 
+       tag: 'gateway' , interfaces: 'eth0:space=oam;eth1:space=access;eth2:space=vxlan;eth3:space=testvlan'}
+VM7: { kvm: '91', hostname: 'juju-afrikha', cores: '4', memory: '15000', disk: 'root:50', 
+       tag: 'juju-upgrade', interfaces: 'eth0:space=oam'}
+VM8: { kvm: '96', hostname: 'compute-1', cores: '4', memory: '15000', disk: 'root:50,root:100,root:25',
+       tag: 'compute', interfaces: 'eth0:space=oam;eth1:space=access;eth2:space=vxlan;eth3:space=testvlan' }
+VM9: { kvm: '96', hostname: 'compute-2', cores: '4', memory: '15000', disk: 'root:50,root:100,root:25',
+       tag: 'compute', interfaces: 'eth0:space=oam;eth1:space=access;eth2:space=vxlan;eth3:space=testvlan'}
+
+TAG1: {name: 'controller'}
+TAG2: {name: 'compute'}
+TAG3: {name: 'gateway'}
+TAG4: {name: 'juju-upgrade'}

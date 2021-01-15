@@ -1,0 +1,25 @@
+---
+- name: Login to MAAS
+  include: api/login.yml
+  tags:
+    - login
+
+- name: create pods
+  include: pods/create-pods.yml
+  tags:
+    - pods
+- name: create tag
+  include: tags/create-tags.yml
+  tags:
+    - tags
+
+- name: assign tags
+  include: tags/assign-tag.yml
+  tags:
+    - tags
+
+
+- name: Login to MAAS
+  include: api/logout.yml
+  tags:
+    - logout

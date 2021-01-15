@@ -1,0 +1,8 @@
+- name: create tags
+  command: 'maas {{maas_user}} tags create name={{item.name}}'
+  ignore_errors: yes
+  loop:
+     - "{{ TAG1 }}"
+     - "{{ TAG2 }}"
+     - "{{ TAG3 }}"
+     - "{{ TAG4 }}"

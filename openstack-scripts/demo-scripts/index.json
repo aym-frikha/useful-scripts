@@ -1,0 +1,22 @@
+{
+    "index": {
+        "com.ubuntu.cloud:custom": {
+            "updated": "Thu, 14 Jan 2021 08:42:18 +0000",
+            "format": "products:1.0",
+            "datatype": "image-ids",
+            "cloudname": "custom",
+            "clouds": [
+                {
+                    "region": "APAC",
+                    "endpoint": "http://blrkeystone:5000/v2.0/"
+                }
+            ],
+            "path": "streams/v1/com.ubuntu.cloud-released-imagemetadata.json",
+            "products": [
+                "com.ubuntu.cloud:server:18.04:amd64"
+            ]
+        }
+    },
+    "updated": "Thu, 14 Jan 2021 08:42:18 +0000",
+    "format": "index:1.0"
+}

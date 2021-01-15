@@ -1,0 +1,5 @@
+#cloud-config
+runcmd:
+ - mkdir -pv /root/cloud-config-test
+ - touch /root/cloud-config-test/boottest
+ - echo "boot instance test" >> /root/cloud-config-test/boottest
